@@ -1,0 +1,110 @@
+{% assign now_utc = "now" | date: "%s" %}
+{% assign now = now_utc | plus: trmnl.user.utc_offset %}
+
+{% # for loop to find day of the week in Spanish %}
+{% assign day_of_week = now_utc | date: "%A"%}
+{% assign days_in_spanish = "Sunday:Domingo,Monday:Lunes,Tuesday:Martes,Wednesday:Miércoles,Thursday:Jueves,Friday:Viernes,Saturday:Sábado" | split: ',' %}
+{% assign day_in_spanish = '' %}
+{% for day in days_in_spanish %}
+{% assign day_pair = day | split: ':' %}
+{% if day_pair[0] == day_of_week %}
+{% assign day_in_spanish = day_pair[1] %}
+{% endif %}
+{% endfor %}
+
+{% assign 12pm = forecast.forecastday[0].hour[12] %}
+{% assign 8pm = forecast.forecastday[0].hour[20] %}
+{% assign forecast_day1 = forecast.forecastday[1] %}
+{% assign forecast_day2 = forecast.forecastday[2] %}
+
+
+<div class="layout layout--col">
+  <div class="grid grid--cols-3 stretch-y">
+    <div class="col col--center">
+      <div class="row row--center">
+        <span class="value value--small">{{ now | date: "%A" }}</span>
+      </div>
+      <div class="row row--center">
+        <span class="value value--xxxlarge">{{ now | date: "%e" }}</span>
+      </div>
+    </div>
+
+    <div class="col col--center">
+      <div class="row row--center">
+        <img class="image-dither" src="https:{{ current.condition.icon | replace: "64x64", "128x128" }}">
+      </div>
+      <div class="row row--center">
+        <span class="value value--xsmall">{{ current.condition.text }}</span>
+      </div>
+    </div>
+
+    <div class="col col--center">
+      <div class="row row--center">
+        <span class="value value--small">{{ forecast.forecastday[0].day.mintemp_c | round }}º - {{ forecast.forecastday[0].day.maxtemp_c | round }}º</span>
+      </div>
+      <div class="row row--center">
+        <span class="value value--xxxlarge">{{ current.temp_c | round }}º</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="grid grid--cols-8 gap--xsmall stretch-y">
+    {% assign periods = "12pm,8pm" | split: "," %}
+    {% for period in periods %}
+    <div class="col col--start col--span-2">      
+      <div class="row row--center">
+        <span class="label">{{ period | capitalize }}</span>  
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row row--end">
+            <img class="w--16 image-dither" src="https:{{ [period].condition.icon | replace: '64x64', '128x128' }}">
+          </div>
+        </div>
+        <div class="col col--center">
+          <span class="value value--small">{{ [period].temp_c | round }}º</span>
+        </div>
+      </div>
+      <div class="row row--center">
+        <span class="value value--xxsmall">{{ [period].condition.text }}</span>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% assign forecast_days = "forecast_day1,forecast_day2" | split: "," %}
+    {% for forecast_day in forecast_days %}
+    <div class="col col--center col--span-2">    
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <div class="row row--center">
+            <span class="label label--outline label--large">{{ [forecast_day].date | date: "%A" }}</span>  
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="row row--end">
+                <img class="w--24 image-dither" src="https:{{ [forecast_day].day.condition.icon | replace: '64x64', '128x128' }}">
+              </div>
+            </div>
+            <div class="col col--center gap--small">
+              <span class="value value--xsmall">{{ [forecast_day].day.maxtemp_c | round }}º</span>
+              <span class="value value--xsmall">{{ [forecast_day].day.mintemp_c | round }}º</span>
+            </div>
+          </div>
+          <div class="row row--center">
+            <span class="value value--xxsmall">{{ [forecast_day].day.condition.text }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="title_bar">
+  <img class="image" src="/images/plugins/trmnl--render.svg" />
+  <span class="title">Madrid</span>
+  <span class="instance">Last updated: {{current.last_updated | date: "%H:%m"}}</span>
+
+</div>
