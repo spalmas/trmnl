@@ -1,0 +1,75 @@
+{% assign now = data[0].lastUpdatedUtc | plus: trmnl.user.utc_offset %}
+
+<div class="layout layout--col gap--space-between">
+  <div class="grid grid--cols-2">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall">{{ data[0].number }}</span>
+        <span class="value value--xxsmall text--gray-2">Flight number</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="label label--xsmall label--inverted">{{ data[0].status }}</span>
+        <span class="value value--xxsmall text--gray-2">Status</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall">{{ data[0].departure.airport.iata}} - {{data[0].arrival.airport.iata }}</span>
+        <span class="value value--xxsmall text--gray-2">Route</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="label label--xsmall">{{ data[0].arrival.terminal }}</span>
+        <span class="value value--xxsmall text--gray-2">Terminal</span>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid--cols-1">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall "> Departure </span>
+        <div class="grid grid--cols-2 stretch-y">
+          <div class="col col--center">
+            <span class="value value--xlarge">{{data[0].departure.predictedTime.local | date: "%H:%M" }}</span>
+          </div>
+          <div class="col col--center">
+            <div class="row row--center">
+              <span class="value value--small">{{data[0].departure.predictedTime.local | date: "%a %d" }}</span>
+            </div>
+          </div>
+        </div>        
+        <span class="value value--xxsmall text--gray-2">Scheduled: {{data[0].departure.scheduledTime.local | date: "%H:%M, %a %d" }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall"> Arrival </span>
+        <div class="grid grid--cols-2 stretch-y">
+          <div class="col col--center">
+            <span class="value value--xlarge">{{data[0].arrival.predictedTime.local | date: "%H:%M" }}</span>
+          </div>
+          <div class="col col--center">
+            <div class="row row--center">
+              <span class="value value--small">{{data[0].arrival.predictedTime.local | date: "%a %d" }}</span>
+            </div>
+          </div>
+        </div>
+        <span class="value value--xxsmall text--gray-2">Scheduled: {{data[0].arrival.scheduledTime.local | date: "%H:%M, %a %d" }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="title_bar">
+    <img class="image" src="/images/plugins/trmnl--render.svg">
+    <span class="title">Flight tracker</span>
+    <span class="instance">Last updated: {{now | date: "%H:%M"}}</span>
+  </div>
